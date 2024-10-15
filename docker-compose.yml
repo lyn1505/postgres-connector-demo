@@ -1,0 +1,80 @@
+services:
+  postgresql-master-users:
+    image: bitnami/postgresql
+    restart: always
+    ports:
+      - '5442:5432'
+    volumes:
+      - postgresql_master_users_data:/bitnami/postgresql
+      - ./sql/db-users.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_user
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=users
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  postgresql-slave-users:
+    image: bitnami/postgresql
+    restart: always
+    ports:
+      - '5443:5432'
+    depends_on:
+      - postgresql-master-users
+    environment:
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_MASTER_HOST=postgresql-master-users
+      - POSTGRESQL_PGAUDIT_LOG=READ
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_user
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  postgresql-master-games:
+    image: bitnami/postgresql
+    restart: always
+    ports:
+      - '5452:5432'
+    volumes:
+      - postgresql_master_games_data:/bitnami/postgresql
+      - ./sql/db-games.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_user
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=games
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  postgresql-slave-games:
+    image: bitnami/postgresql
+    restart: always
+    ports:
+      - '5453:5432'
+    depends_on:
+      - postgresql-master-games
+    environment:
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_MASTER_HOST=postgresql-master-games
+      - POSTGRESQL_PGAUDIT_LOG=READ
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_user
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+
+volumes:
+  postgresql_master_users_data:
+    driver: local
+  postgresql_master_games_data:
+    driver: local
