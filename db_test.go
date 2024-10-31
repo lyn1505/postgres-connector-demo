@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/axieinfinity/susanoo/database/postgresql/gorm"
 	"github.com/axieinfinity/susanoo/log/logger/zerolog"
-	"github.com/axieinfinity/susanoo/postgresql/gorm"
 	"github.com/axieinfinity/susanoo/x/viper"
 	zerolog2 "github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
@@ -25,9 +25,9 @@ func initDB() (*gorm2.DB, error) {
 		return nil, err
 	}
 
-	return gorm.New(
-		gorm.Options.LoadConfig(v.Sub("gorm")),
-		gorm.Options.Logger(loggerProvider.Logger("GORM")),
+	return gorm.NewClusters(
+		gorm.ClustersOptions.LoadConfig(v.Sub("gorm")),
+		gorm.ClustersOptions.Logger(loggerProvider.Logger("GORM")),
 	)
 }
 
@@ -49,7 +49,7 @@ func TestWriteToGamesTable(t *testing.T) {
 }
 
 // TestReadFromGamesTableWithPreload executes a 2 read queries to "games" and "users" table.
-// RUN TestWriteToGameTable FIRST before running this test.
+// RUN TestWriteToGameTable above FIRST before running this test.
 // >> Watch for logs in "users" SLAVE & "games" SLAVE container to see that the queries are executed there.
 func TestReadFromGamesTableWithPreload(t *testing.T) {
 	db, err := initDB()

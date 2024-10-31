@@ -3,7 +3,7 @@ module pg-demo
 go 1.23.2
 
 require (
-	github.com/axieinfinity/susanoo v0.0.0-20241011103053-be524c523bab
+	github.com/axieinfinity/susanoo v0.0.0-20241031091814-caf2bf1d91ad
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
 	gorm.io/gorm v1.25.12
@@ -11,8 +11,6 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/avast/retry-go v3.0.0+incompatible // indirect
-	github.com/creasty/defaults v1.8.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
